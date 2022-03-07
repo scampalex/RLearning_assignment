@@ -62,7 +62,10 @@ combined_2 <- combined[,2:562] # removing the column names so column indexes mat
 filtered_combined <- combined_2 %>% select(all_of(index_features))
 full_dataset <- cbind(subject_combined,activity_type,filtered_combined)
 
-## full_dataset$activity_type <- rename(full_dataset$activity_type, 1 == "Walking", 2 == "Walking Upstairs", 3 == "Walking Downstairs",
-##                                            4 == "Sitting",5 == "Standing", 6 == "Laying")
+## Labelling activity
+full_dataset$activity_type <- factor(full_dataset$activity_type, levels = c(1, 2,3, 4,5,6), labels = c("Walking", "Walking Upstairs","Walking Downstairs", "Sitting", "Standing","Laying"))
 
-## mydata[sapply(mydata, is.numeric)] <- lapply(mydata[sapply(mydata, is.numeric)], as.factor)
+## Create dataset of averaged values
+averaged_data <- full_dataset %>%group_by(activity_type, Subjects) %>% summarise(across("tBodyAcc-mean()-X":"fBodyBodyGyroJerkMag-meanFreq()",mean))
+
+
